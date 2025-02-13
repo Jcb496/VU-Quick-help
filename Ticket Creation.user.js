@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         TDX Ticket Creation
-// @namespace    https://raw.githubusercontent.com/Jcb496/Scripts/main/Ticket%20Creation.user.js
+// @namespace    http://tampermonkey.net/
 // @version      2
 // @description  Creates a "Create Ticket" With "Request", "Incident", and "Home". Service, Requestor, KB, Responsible, and Location open for search. While also filling out Status, Impact, Urgency, and Source.
 // @author       James
