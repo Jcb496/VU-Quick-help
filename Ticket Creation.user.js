@@ -7,7 +7,7 @@
 // @match        https://tdx.vanderbilt.edu/TDNext/*
 // @downloadURL  https://raw.githubusercontent.com/Jcb496/Scripts/main/Ticket%20Creation.user.js
 // @updateURL    https://raw.githubusercontent.com/Jcb496/Scripts/main/Ticket%20Creation.user.js
-// @grant        none
+// @grant        GM_addStyle
 // ==/UserScript==
 
 
