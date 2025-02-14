@@ -4,7 +4,8 @@
 // @version      2
 // @description  Creates a "Create Ticket" With "Request", "Incident", and "Home". Service, Requestor, KB, Responsible, and Location open for search. While also filling out Status, Impact, Urgency, and Source.
 // @author       James
-// @match        https://tdx.vanderbilt.edu/TDNext/*
+// @match        https://tdx.vanderbilt.edu/TDNext/Apps/34/Tickets/TicketNewSuccess?*
+// @match        https://tdx.vanderbilt.edu/TDNext/Home/*
 // @downloadURL  https://raw.githubusercontent.com/Jcb496/Scripts/main/Ticket%20Creation.user.js
 // @updateURL    https://raw.githubusercontent.com/Jcb496/Scripts/main/Ticket%20Creation.user.js
 // @grant        GM_addStyle
