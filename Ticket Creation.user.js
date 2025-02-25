@@ -85,19 +85,19 @@
    // Finding & Selecting
     function clickElementsAfterRedirect() {
         const interval = setInterval(() => {
-            const status = document.getElementById('attribute40');
-            status.value = '83';
-            const impact = document.getElementById('attribute369');
-            impact.value = '12';
-            const urgency = document.getElementById('attribute370');
-            urgency.value = '18';
-            const source = document.getElementById('attribute371');
-            source.value = '5';
-            const service = document.getElementById('attribute789_lookup');
-            const requestor = document.getElementById('attribute495_lookup');
-            const kb = document.getElementById('attribute1237_lookup');
-            const responsible = document.getElementById('attribute1279_lookup');
-            const location = document.getElementById('attribute701_lookup');
+            const status = document.getElementById('attribute40'); //Status
+            status.value = '83'; //On Hold
+            const impact = document.getElementById('attribute369'); //Impact
+            impact.value = '12'; //Affects User
+            const urgency = document.getElementById('attribute370'); //Urgency
+            urgency.value = '18'; //Unable to Complete Any Work
+            const source = document.getElementById('attribute371'); //Source
+            source.value = '5'; //Phone
+            const location = document.getElementById('attribute701_lookup'); //Location
+            const responsible = document.getElementById('attribute1279_lookup'); //Responsible
+            const kb = document.getElementById('attribute1237_lookup'); //KB
+            const requestor = document.getElementById('attribute495_lookup'); //Requestor
+            const service = document.getElementById('attribute789_lookup'); //Service
 
             if (service) {
                 service.click();
