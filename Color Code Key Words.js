@@ -1,91 +1,91 @@
-
 // ==UserScript==
-// @name         Color Code Key Words
+// @name         Highlight Status Column in TDX
 // @namespace    http://tampermonkey.net/
 // @version      1
-// @description  Color coding key words in TDX safely and efficiently
+// @description  Highlights keywords in the Status column.
 // @author       James
-// @match        https://tdx.vanderbilt.edu/TDNext/Home*
-// @downloadURL  https://github.com/Jcb496/VU-Quick-help/main/Color%20Code%20Key%20Words.js
-// @updateURL    https://github.com/Jcb496/VU-Quick-help/main/Color%20Code%20Key%20Words.js
+// @match        https://tdx.vanderbilt.edu/TDNext/*
 // @grant        none
 // ==/UserScript==
 
 (function () {
     'use strict';
 
+    //_______________________________________________Highlight Colors_____________________________________
     const wordStyles = {
         "New": "color: green; font-weight: bold;",
-        "In Process": "color: blue; font-weight: bold;",
-        "Closed": "color: black; font-weight: bold;",
-        "On Hold": "color: orange; font-weight: bold;",
+        "In Process": "color: orange; font-weight: bold;",
         "Reopened": "color: red; font-weight: bold;",
     };
 
     function wrapWord(word, style) {
-        return `<span class="tm-highlighted" style="${style}">${word}</span>`;
+        return `<span style="${style}">${word}</span>`;
     }
 
-    function highlightTextNodes(root) {
-        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-            acceptNode: node => {
-                if (
-                    node.parentNode &&
-                    node.parentNode.nodeName !== "SCRIPT" &&
-                    node.parentNode.nodeName !== "STYLE" &&
-                    !node.parentNode.classList.contains("tm-highlighted")
-                ) {
-                    return NodeFilter.FILTER_ACCEPT;
-                }
-                return NodeFilter.FILTER_REJECT;
+    function highlightStatusColumn(table) {
+        const headerCells = table.querySelectorAll('thead th');
+        let statusColIndex = -1;
+
+        headerCells.forEach((th, index) => {
+            const text = th.textContent.trim().toLowerCase();
+            if (text.includes('status')) {
+                statusColIndex = index;
             }
         });
 
-        const nodes = [];
-        while (walker.nextNode()) {
-            nodes.push(walker.currentNode);
-        }
+        if (statusColIndex === -1) return;
 
-        nodes.forEach(node => {
-            let html = node.nodeValue;
-            let changed = false;
-
-            for (const word in wordStyles) {
-                const regex = new RegExp(`\\b(${word})\\b`, 'g');
-                if (regex.test(html)) {
-                    html = html.replace(regex, wrapWord(word, wordStyles[word]));
-                    changed = true;
-                }
-            }
-
-            if (changed) {
-                const span = document.createElement('span');
-                span.innerHTML = html;
-                node.parentNode.replaceChild(span, node);
-            }
-        });
-    }
-
-    function observeAndHighlight() {
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1) {
-                        highlightTextNodes(node);
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > statusColIndex) {
+                const cell = cells[statusColIndex];
+                let html = cell.innerHTML;
+                let changed = false;
+                for (const word in wordStyles) {
+                    const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+                    if (regex.test(html)) {
+                        html = html.replace(regex, wrapWord(word, wordStyles[word]));
+                        changed = true;
                     }
-                });
+                }
+
+                if (changed) {
+                    cell.innerHTML = html;
+                }
+            }
+        });
+    }
+
+    function waitForTablesAndHighlight() {
+        const tables = document.querySelectorAll('table');
+        let foundAny = false;
+
+        tables.forEach(table => {
+            if (table.dataset.tmProcessed) return;
+            table.dataset.tmProcessed = "true";
+
+            const headerCells = table.querySelectorAll('thead th');
+            let hasStatus = false;
+
+            headerCells.forEach(th => {
+                if (th.textContent.trim().toLowerCase().includes('status')) {
+                    hasStatus = true;
+                }
             });
-        });
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
+            if (hasStatus) {
+                highlightStatusColumn(table);
+                const observer = new MutationObserver(() => highlightStatusColumn(table));
+                observer.observe(table, { childList: true, subtree: true });
+                foundAny = true;
+            }
         });
-
-        highlightTextNodes(document.body); // Initial run
     }
 
     window.addEventListener('load', () => {
-        setTimeout(observeAndHighlight, 1000);
+        setTimeout(() => {
+            waitForTablesAndHighlight();
+        }, 1000);
     });
 })();
