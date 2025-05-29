@@ -6,6 +6,8 @@
 // @description  Color coding key words in TDX safely and efficiently
 // @author       James
 // @match        https://tdx.vanderbilt.edu/TDNext/Home*
+// @downloadURL  https://github.com/Jcb496/VU-Quick-help/main/Color%20Code%20Key%20Words.js
+// @updateURL    https://github.com/Jcb496/VU-Quick-help/main/Color%20Code%20Key%20Words.js
 // @grant        none
 // ==/UserScript==
 
