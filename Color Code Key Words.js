@@ -1,7 +1,8 @@
+
 // ==UserScript==
-// @name         Highlight Status Column in TDX
+// @name         Highlight Status Column
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      2
 // @description  Highlights keywords in the Status column.
 // @author       James
 // @match        https://tdx.vanderbilt.edu/TDNext/*
@@ -11,11 +12,11 @@
 (function () {
     'use strict';
 
-    //_______________________________________________Highlight Colors_____________________________________
     const wordStyles = {
         "New": "color: green; font-weight: bold;",
         "In Process": "color: orange; font-weight: bold;",
         "Reopened": "color: red; font-weight: bold;",
+        "On Hold": "color: blue; font-weight: bold;",
     };
 
     function wrapWord(word, style) {
@@ -59,11 +60,10 @@
 
     function waitForTablesAndHighlight() {
         const tables = document.querySelectorAll('table');
-        let foundAny = false;
-
         tables.forEach(table => {
-            if (table.dataset.tmProcessed) return;
-            table.dataset.tmProcessed = "true";
+            // Use a custom attribute to avoid conflict with TDX's own data-tm-processed
+            if (table.dataset.statusHighlighted) return;
+            table.dataset.statusHighlighted = "true";
 
             const headerCells = table.querySelectorAll('thead th');
             let hasStatus = false;
@@ -78,7 +78,6 @@
                 highlightStatusColumn(table);
                 const observer = new MutationObserver(() => highlightStatusColumn(table));
                 observer.observe(table, { childList: true, subtree: true });
-                foundAny = true;
             }
         });
     }
@@ -87,5 +86,9 @@
         setTimeout(() => {
             waitForTablesAndHighlight();
         }, 1000);
+
+		SetInterval(() => {
+			waitForTableAndHighlight();
+		}, 2000);
     });
 })();
